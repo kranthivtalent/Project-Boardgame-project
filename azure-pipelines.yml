@@ -1,7 +1,7 @@
 # yaml for acr build and push 
 
 trigger:
-  - main
+  - master
 
 pool:
   name: hostedpool
