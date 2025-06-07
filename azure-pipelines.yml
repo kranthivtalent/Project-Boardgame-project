@@ -1,22 +1,26 @@
 # yaml for acr build and push 
 
 trigger:
-  none
+  - main
 
 pool:
-  name: dockerpool
+  name: hostedpool
   demands:
-  - agent.name -equals   dockeragent
+  - agent.name -equals   javaagent1
 
 stages:
   - stage: docker_build
     jobs:
       - job: "docker_build"
         steps:
-        - task: DockerCompose@1
+        - task: Maven@4
           inputs:
-            containerregistrytype: 'Azure Container Registry'
-            azureSubscription: 'ACR-TO-Pipeline'
-            azureContainerRegistry: '{"loginServer":"classregistry.azurecr.io", "id" : "/subscriptions/c58c123c-4245-4723-a096-5ee1f90682a5/resourceGroups/ACR-grp/providers/Microsoft.ContainerRegistry/registries/classregistry"}'
-            dockerComposeFile: '**/docker-compose.yml'
-            action: 'Run a Docker Compose command'
+            mavenPomFile: 'Boardgame/pom.xml'
+            goals: 'compile'
+            publishJUnitResults: true
+            testResultsFiles: '**/surefire-reports/TEST-*.xml'
+            javaHomeOption: 'JDKVersion'
+            mavenVersionOption: 'Default'
+            mavenAuthenticateFeed: false
+            effectivePomSkip: false
+            sonarQubeRunAnalysis: false
